@@ -1,0 +1,98 @@
+<!-- filepath: c:\projects\supplies_management_system\supply\templates\supply\supply_transaction/supplytransaction_list.html -->
+{% extends "supply/base/base.html" %}
+
+{% block content %}
+<div class="container-fluid pt-4 px-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Supply Transactions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Item</th>
+                                    <th>Transaction Type</th>
+                                    <th>Quantity</th>
+                                    <th>Date</th>
+                                    <th>Performed By</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for transaction in supply_transactions %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{ transaction.supply_item.item_name }}</td>
+                                    <td>{{ transaction.get_transaction_type_display }}</td>
+                                    <td>{{ transaction.quantity }}</td>
+                                    <td>{{ transaction.date|date:"Y-m-d H:i" }}</td>
+                                    <td>{{ transaction.performed_by }}</td>
+                                    <td>
+                                        <a href="{% url 'supply:supplytransaction_edit' transaction.id %}" class="btn btn-sm btn-primary">Edit</a>
+                                        <a href="{% url 'supply:supplytransaction_delete' transaction.id %}" class="btn btn-sm btn-danger">Delete</a>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="7" class="text-center">No transactions found.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="pagination-container">
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination justify-content-center">
+                            {% if page_obj.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page=1" aria-label="First">
+                                        <span aria-hidden="true">&laquo;&laquo;</span>
+                                    </a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+                            {% endif %}
+                
+                            {% for num in paginator.page_range %}
+                                {% if page_obj.number == num %}
+                                    <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                                    <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                                {% endif %}
+                            {% endfor %}
+                
+                            {% if page_obj.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ paginator.num_pages }}" aria-label="Last">
+                                        <span aria-hidden="true">&raquo;&raquo;</span>
+                                    </a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                </div>
+                
+                <div class="card-footer text-end">
+                    <a href="{% url 'supply:supplytransaction_add' %}" class="btn btn-success">Add New Transaction</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock content %}

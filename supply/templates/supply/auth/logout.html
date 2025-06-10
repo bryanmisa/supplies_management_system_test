@@ -1,0 +1,9 @@
+<!-- filepath: c:\projects\supplies_management_system_test\supply\templates\supply\auth\logout.html -->
+{% extends "supply/base/base.html" %}
+
+{% block content %}
+<div class="container mt-5 text-center">
+    <h3>You have successfully logged out.</h3>
+    <a href="{% url 'login' %}" class="btn btn-primary mt-3">Login Again</a>
+</div>
+{% endblock content %}

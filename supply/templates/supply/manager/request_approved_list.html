@@ -1,0 +1,122 @@
+{% extends "supply/base/base.html" %}
+
+{% block content %}
+<div class="container-fluid pt-4 px-4">
+    <div class="row">
+        <div class="col-12">
+            <h2>{{ page_title|default:"Approved Requests" }}</h2>
+            <p>Manage approved requests ready for delivery.</p>
+        </div>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="row">
+        <div class="col-12">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>#</th>
+                            <th>Customer Name</th>
+                            <th>Item</th>
+                            <th>Requested Quantity</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for request in customer_requests %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ request.customer.get_full_name|default:request.customer.username }}</td>
+                            <td>{{ request.supply_item.item_name }}</td>
+                            <td>{{ request.requested_quantity }}</td>
+                            <td><span class="badge bg-info text-dark">{{ request.get_status_display }}</span></td>
+                            <td>
+                                {# Button to mark as delivered #}
+                                <form method="post" action="{% url 'supply:deliver_request' request.pk %}" style="display: inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-primary btn-sm">Mark as Delivered</button>
+                                </form>
+                                {# Optional: Button to cancel delivery (if needed) #}
+                                {# <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#cancelDeliveryModal" data-request-id="{{ request.pk }}">Cancel Delivery</button> #}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center">No approved requests found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="pagination-container">
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center">
+                        {% if page_obj.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page=1" aria-label="First">
+                                    <span aria-hidden="true">&laquo;&laquo;</span>
+                                </a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                        {% endif %}
+            
+                        {% for num in paginator.page_range %}
+                            {% if page_obj.number == num %}
+                                <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                                <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                            {% endif %}
+                        {% endfor %}
+            
+                        {% if page_obj.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ paginator.num_pages }}" aria-label="Last">
+                                    <span aria-hidden="true">&raquo;&raquo;</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+   
+</div>
+
+{# Optional: Include Cancel Delivery Modal if the button is enabled above #}
+{# {% include 'supply/partials/_cancel_delivery_modal.html' %} #}
+
+{# Optional: Include script for Cancel Delivery Modal if used #}
+{# <script> #}
+{#    // Script to update Cancel Delivery Modal action URL #}
+{#    const cancelDeliveryModal = document.getElementById('cancelDeliveryModal'); #}
+{#    if (cancelDeliveryModal) { #}
+{#        cancelDeliveryModal.addEventListener('show.bs.modal', function (event) { #}
+{#            const button = event.relatedTarget; #}
+{#            const requestId = button.getAttribute('data-request-id'); #}
+{#            const form = document.getElementById('cancelDeliveryForm'); #}
+{#            form.action = "{% url 'supply:cancel_delivery' 0 %}".replace('/0/', `/${requestId}/`); #}
+{#        }); #}
+{#    } #}
+{# </script> #}
+{% endblock content %}

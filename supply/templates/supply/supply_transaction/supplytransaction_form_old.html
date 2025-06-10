@@ -1,0 +1,71 @@
+<!-- filepath: c:\projects\supplies_management_system\supply\templates\supply\supply_transaction\supplytransaction_form.html -->
+{% extends "supply/base/base.html" %}
+
+{% block content %}
+<div class="container-fluid pt-4 px-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Add/Edit Supply Transaction</h5>
+                   
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="id_supply_item" class="form-label">{{ form.supply_item.label }}</label>
+                            <select id="id_supply_item" name="supply_item" class="form-control"></select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_transaction_type" class="form-label">{{ form.transaction_type.label }}</label>
+                            {{ form.transaction_type }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_quantity" class="form-label">{{ form.quantity.label }}</label>
+                            {{ form.quantity }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_performed_by" class="form-label">{{ form.performed_by.label }}</label>
+                            {{ form.performed_by }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_remarks" class="form-label">{{ form.remarks.label }}</label>
+                            {{ form.remarks }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_reference_number" class="form-label">{{ form.reference_number.label }}</label>
+                            {{ form.reference_number }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_source_location" class="form-label">{{ form.source_location.label }}</label>
+                            {{ form.source_location }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_destination_location" class="form-label">{{ form.destination_location.label }}</label>
+                            {{ form.destination_location }}
+                        </div>
+
+                        {% if form.errors %}
+                            <div class="alert alert-danger">
+                                <ul>
+                                    {% for field, errors in form.errors.items %}
+                                        <li>{{ field }}: {{ errors|join:", " }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %}
+                        
+                        <div class="text-end">
+                            <button type="submit" class="btn btn-primary">Save</button>
+                            <a href="{% url 'supply:supplytransaction_list' %}" class="btn btn-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

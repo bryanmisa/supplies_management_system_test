@@ -1,0 +1,7 @@
+django
+Pillow
+django-select2
+django-crispy-forms
+crispy-bootstrap4
+redis
+django-redis

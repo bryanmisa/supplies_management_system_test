@@ -1,0 +1,27 @@
+<!-- filepath: c:\projects\supplies_management_system\supply\templates\supply\supply_transaction\supplytransaction_form.html -->
+{% extends "supply/base/base.html" %}
+
+{% block content %}
+<div class="container-fluid pt-4 px-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Add/Edit Supply Transaction</h5>
+                   
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <div class="text-end">
+                            <button type="submit" class="btn btn-primary">Save</button>
+                            <a href="{% url 'supply:supplytransaction_list' %}" class="btn btn-secondary">Cancel</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

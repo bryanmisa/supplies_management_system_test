@@ -1,0 +1,22 @@
+{% extends "supply/base/base.html" %}
+
+{% block content %}
+<div class="container-fluid pt-4 px-4">
+    <div class="row">
+        <div class="col-12">
+            <h2>Reject Request</h2>
+            <p>Provide a reason for rejecting the request.</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-danger w-100">Reject Request</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}

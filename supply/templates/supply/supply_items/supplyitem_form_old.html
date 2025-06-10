@@ -1,0 +1,93 @@
+<!-- filepath: c:\projects\supplies_management_system\supply\templates\supply\supply_items\supplyitem_form.html -->
+{% extends "supply/base/base.html" %}
+
+{% block content %}
+
+<div class="container-fluid pt-4 px-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Add/Edit Supply Item</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="id_item_name" class="form-label">{{ form.item_name.label }}</label>
+                            {{ form.item_name }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_item_code" class="form-label">{{ form.item_code.label }}</label>
+                            {{ form.item_code }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_category" class="form-label">{{ form.category.label }}</label>
+                            {{ form.category }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_description" class="form-label">{{ form.description.label }}</label>
+                            {{ form.description }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_quantity_in_stock" class="form-label">{{ form.quantity_in_stock.label }}</label>
+                            {{ form.quantity_in_stock }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_reorder_level" class="form-label">{{ form.reorder_level.label }}</label>
+                            {{ form.reorder_level }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_unit_price" class="form-label">{{ form.unit_price.label }}</label>
+                            {{ form.unit_price }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_unit_of_measure" class="form-label">{{ form.unit_of_measure.label }}</label>
+                            {{ form.unit_of_measure }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_currency" class="form-label">{{ form.currency.label }}</label>
+                            {{ form.currency }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_supplier" class="form-label">{{ form.supplier.label }}</label>
+                            {{ form.supplier }}
+                        </div>
+                        
+                        <div class="mb-3 d-flex align-items-center">
+                            <label for="id_preferred_supplier" class="form-label me-3">{{ form.preferred_supplier.label }}</label>
+                            <div>
+                                {{ form.preferred_supplier }}
+                             </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="id_status" class="form-label">{{ form.status.label }}</label>
+                            {{ form.status }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_image" class="form-label">{{ form.image.label }}</label>
+                            {{ form.image }}
+                        </div>
+                        
+                        {% if form.errors %}
+                            <div class="alert alert-danger">
+                                <ul>
+                                    {% for field, errors in form.errors.items %}
+                                        <li>{{ field }}: {{ errors|join:", " }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %}
+                        
+                        <button type="submit" class="btn btn-primary">Save</button>
+                        <a href="{% url 'supplyitem_list' %}" class="btn btn-secondary">Cancel</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

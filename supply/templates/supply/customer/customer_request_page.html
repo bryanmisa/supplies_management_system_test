@@ -1,0 +1,53 @@
+{% extends "supply/base/base.html" %}
+{% load static %}
+{% block content %}
+<div class="container-fluid pt-4 px-4">
+    <div class="row">
+        <div class="col-12">
+            <h2>Customer Request Page</h2>
+            <p>Browse available supplies and submit your request.</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Available Supplies -->
+        <div class="col-md-8">
+            <div class="row">
+                {% for supply in available_supplies %}
+                <div class="col-md-4 mb-4">
+                    <div class="card text-center">
+   
+                        <div class="card-body">
+                            {% if supply.image %}
+                            <img src="{{ supply.image.url }}" class="card-img-top" alt="{{ supply.item_name }}" style="width: 100px; height: 150px;">
+                            {% else %}
+                            <img src="{% static 'images/no_image_available.png' %}" class="card-img-top" alt="No Image">
+                            {% endif %}
+                            <h5 class="card-title">{{ supply.item_name }}</h5>
+                            <p class="card-text">Stock: {{ supply.quantity_in_stock }}</p>
+                            <p class="card-text">Price: {{ supply.unit_price }} {{ supply.currency }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Request Form -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Submit a Request</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <button type="submit" class="btn btn-success w-100">Submit Request</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

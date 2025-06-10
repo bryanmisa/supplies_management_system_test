@@ -1,0 +1,93 @@
+{% extends "supply/base/base.html" %}
+
+{% block content %}
+<div class="container-fluid pt-4 px-4">
+    <div class="row">
+        <div class="col-12">
+            <h2>Pending Customer Requests</h2>
+            <p>Manage pending customer requests below.</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>#</th>
+                            <th>Customer Name</th>
+                            <th>Item</th>
+                            <th>Requested Quantity</th>
+                            <th>Status</th>
+                            <th>Remarks</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for request in customer_requests %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ request.customer.get_full_name }}</td>
+                            <td>{{ request.supply_item.item_name }}</td>
+                            <td>{{ request.requested_quantity }}</td>
+                            <td>{{ request.get_status_display }}</td>
+                            <td>
+                                {% if request.requested_quantity > request.supply_item.quantity_in_stock %}
+                                <span class="text-danger">Requested quantity exceeds available stock</span>
+                                {% else %}
+                                <span class="text-success">Within available stock</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{% url 'supply:approve_request' request.pk %}" class="btn btn-success btn-sm">Approve</a>
+                                <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#rejectRequestModal" data-request-id="{{ request.pk }}">Reject</button>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7" class="text-center">No pending customer requests found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Reject Request Modal -->
+<div class="modal fade" id="rejectRequestModal" tabindex="-1" aria-labelledby="rejectRequestModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="rejectRequestModalLabel">Reject Request</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="post">
+                <div class="modal-body">
+                    {% csrf_token %}
+                    {{ form.rejection_reason.label_tag }} <!-- Label for the rejection reason -->
+                    {{ form.rejection_reason }} <!-- Text area for the rejection reason -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger">Reject</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Update the action URL for the Reject Request form
+    const rejectRequestModal = document.getElementById('rejectRequestModal');
+    rejectRequestModal.addEventListener('show.bs.modal', function (event) {
+        const button = event.relatedTarget; // Button that triggered the modal
+        const requestId = button.getAttribute('data-request-id'); // Extract request ID
+        const form = rejectRequestModal.querySelector('form'); // Get the form inside the modal
+        const actionUrl = "{% url 'supply:reject_request' 0 %}".replace('/0/', `/${requestId}/`); // Replace '0' with the request ID
+        form.action = actionUrl; // Update the form action URL
+    });
+</script>
+{% endblock content %}

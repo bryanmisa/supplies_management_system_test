@@ -1,0 +1,27 @@
+<!-- filepath: c:\projects\supplies_management_system\supply\templates\supply\supply_items\supplyitem_confirm_delete.html -->
+{% extends "supply/base/base.html" %}
+
+{% block content %}
+<div class="container-fluid pt-4 px-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8">
+            <div class="card">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0">Confirm Delete</h5>
+                </div>
+                <div class="card-body">
+                    <p>Are you sure you want to delete the supply item <strong>{{ object.item_name }}</strong>?</p>
+                    <p>This action cannot be undone.</p>
+                </div>
+                <div class="card-footer text-end">
+                    <form method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                        <a href="{% url 'supply:supplyitem_list' %}" class="btn btn-secondary">Cancel</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

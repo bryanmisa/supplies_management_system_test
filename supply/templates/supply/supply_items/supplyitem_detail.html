@@ -1,0 +1,77 @@
+{% extends "supply/base/base.html" %}
+{% load static %}
+{% block content %}
+<div class="container-fluid pt-4 px-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card text-center">
+                <div class="card-header">
+                    {% if supply_item.image %}
+                    <img src="{{ supply_item.image.url }}" class="card-img-top" alt="{{ supply.item_name }}" style="width: 100px; height: 150px;">
+                    {% else %}
+                    <img src="{% static 'images/no_image_available.png' %}" class="card-img-top" alt="No Image">
+                    {% endif %}
+                    <h4>{{ supply_item.item_name }}</h4>
+                  </div>
+
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Supply Item Details</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Item Code:</strong> {{ supply_item.item_code }}</p>
+                    <p><strong>Category:</strong> {{ supply_item.category }}</p>
+                    <p><strong>Quantity in Stock:</strong> {{ supply_item.quantity_in_stock }}</p>
+                    <p><strong>Unit Price:</strong> {{ supply_item.unit_price }}</p>
+                </div>
+            </div>
+
+            <div class="card mt-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Transactions</h5>
+                </div>
+                <div class="card-body">
+                    <!-- Dropdown for filtering -->
+                    <form method="get" class="mb-3">
+                        <label for="transaction_type" class="form-label">Transaction Type:</label>
+                        <select name="transaction_type" id="transaction_type" class="form-select" onchange="this.form.submit()">
+                            <option value="">All</option>
+                            <option value="supply_in" {% if selected_transaction_type == 'supply_in' %}selected{% endif %}>Supply In</option>
+                            <option value="supply_out" {% if selected_transaction_type == 'supply_out' %}selected{% endif %}>Supply Out</option>
+                        </select>
+                    </form>
+
+                    <!-- Table for displaying transactions -->
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Type</th>
+                                    <th>Quantity</th>
+                                    <th>Date</th>
+                                    <th>Remarks</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for transaction in transactions %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{ transaction.get_transaction_type_display }}</td>
+                                    <td>{{ transaction.quantity }}</td>
+                                    <td>{{ transaction.date }}</td>
+                                    <td>{{ transaction.remarks }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="5" class="text-center">No transactions found.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

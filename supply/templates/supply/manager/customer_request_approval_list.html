@@ -1,0 +1,169 @@
+{% extends "supply/base/base.html" %}
+
+{% block content %}
+<div class="container-fluid pt-4 px-4">
+    <div class="row">
+        <div class="col-12">
+            <h2>Customer Requests</h2>
+            {% if request.GET.error %}
+            <div class="alert alert-danger">
+                {{ request.GET.error }}
+            </div>
+            {% endif %}
+            <p>Manage customer requests below.</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>#</th>
+                            <th>Customer Name</th>
+                            <th>Item</th>
+                            <th>Requested Quantity</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for request in customer_requests %}
+                        {% if request.status != 'delivered' and request.status != 'rejected' %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ request.customer_name }}</td>
+                            <td>{{ request.supply_item.item_name }}</td>
+                            <td>{{ request.requested_quantity }}</td>
+                            <td>{{ request.get_status_display }}</td>
+                            <td>
+                                {% if request.status == 'pending' %}
+                                <a href="{% url 'supply:approve_customer_request' request.pk %}" class="btn btn-success btn-sm">Approve</a>
+                                <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#rejectRequestModal" data-request-id="{{ request.pk }}">Reject</button>
+                                {% elif request.status == 'approved' %}
+                                <span class="badge bg-warning text-dark">For Delivery</span>
+                                <a href="{% url 'supply:mark_as_delivered' request.pk %}" class="btn btn-primary btn-sm">Mark as Delivered</a>
+                                <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#cancelDeliveryModal" data-request-id="{{ request.pk }}">Cancel Delivery</button>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endif %}
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center">No customer requests found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="pagination-container">
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page=1" aria-label="First">
+                            <span aria-hidden="true">&laquo;&laquo;</span>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                {% endif %}
+    
+                {% for num in paginator.page_range %}
+                    {% if page_obj.number == num %}
+                        <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                        <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                    {% endif %}
+                {% endfor %}
+    
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ paginator.num_pages }}" aria-label="Last">
+                            <span aria-hidden="true">&raquo;&raquo;</span>
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+    
+</div>
+
+<!-- Reject Request Modal -->
+<div class="modal fade" id="rejectRequestModal" tabindex="-1" aria-labelledby="rejectRequestModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" action="{% url 'supply:reject_customer_request' 0 %}" id="rejectRequestForm">
+                {% csrf_token %}
+                <div class="modal-header">
+                    <h5 class="modal-title" id="rejectRequestModalLabel">Reject Request</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <textarea name="rejection_reason" class="form-control" rows="3" placeholder="Enter reason for rejection" required></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-danger">Reject</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Cancel Delivery Modal -->
+<div class="modal fade" id="cancelDeliveryModal" tabindex="-1" aria-labelledby="cancelDeliveryModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" action="{% url 'supply:cancel_delivery' 0 %}" id="cancelDeliveryForm">
+                {% csrf_token %}
+                <div class="modal-header">
+                    <h5 class="modal-title" id="cancelDeliveryModalLabel">Cancel Delivery</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <textarea name="rejection_reason" class="form-control" rows="3" placeholder="Enter reason for cancellation" required></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-danger">Cancel Delivery</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Update the action URL for the Reject Request form
+    const rejectRequestModal = document.getElementById('rejectRequestModal');
+    rejectRequestModal.addEventListener('show.bs.modal', function (event) {
+        const button = event.relatedTarget;
+        const requestId = button.getAttribute('data-request-id');
+        const form = document.getElementById('rejectRequestForm');
+        form.action = form.action.replace('/0/', `/${requestId}/`);
+    });
+
+    // Update the action URL for the Cancel Delivery form
+    const cancelDeliveryModal = document.getElementById('cancelDeliveryModal');
+    cancelDeliveryModal.addEventListener('show.bs.modal', function (event) {
+        const button = event.relatedTarget;
+        const requestId = button.getAttribute('data-request-id');
+        const form = document.getElementById('cancelDeliveryForm');
+        form.action = form.action.replace('/0/', `/${requestId}/`);
+    });
+</script>
+{% endblock content %}

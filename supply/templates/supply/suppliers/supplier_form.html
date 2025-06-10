@@ -1,0 +1,43 @@
+<!-- filepath: c:\projects\supplies_management_system\supply\templates\supply\suppliers\supplier_form.html -->
+{% extends "supply/base/base.html" %}
+
+{% block content %}
+
+<div class="container-fluid pt-4 px-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Edit/Update Supplier</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="id_name" class="form-label">{{ form.name.label }}</label>
+                            {{ form.name }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_contact_email" class="form-label">{{ form.contact_email.label }}</label>
+                            {{ form.contact_email }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_phone" class="form-label">{{ form.phone.label }}</label>
+                            {{ form.phone }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_address" class="form-label">{{ form.address.label }}</label>
+                            {{ form.address }}
+                        </div>
+                        <div class="text-end">
+                            <button type="submit" class="btn btn-primary">Update</button>
+                            <a href="{% url 'supply:suppliers_list' %}" class="btn btn-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

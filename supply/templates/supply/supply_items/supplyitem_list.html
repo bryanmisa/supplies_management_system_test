@@ -1,0 +1,76 @@
+<!-- filepath: c:\projects\supplies_management_system\supply\templates\supply\supply_items\supplyitem_list.html -->
+{% extends "supply/base/base.html" %}
+
+{% block content %}
+<div class="container-fluid pt-4 px-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Supply Items List</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Item Name</th>
+                                    <th>Category</th>
+                                    <th>Quantity</th>
+                                    <th>Availability</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in supply_items %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td><a href="{% url 'supply:supplyitem_detail' item.item_id %}">{{ item.item_name }}</a></td>
+                                    <td>{{ item.category }}</td>
+                                    <td>{{ item.quantity_in_stock }}</td>
+                                    <td>{{ item.availability}}</td>
+                                    <td>
+                                        <a href="{% url 'supply:supplyitem_edit' item.item_id %}" class="btn btn-sm btn-primary">Edit</a>
+                                        <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ item.id }}">Delete</button>
+                                    </td>
+                                </tr>
+
+                                <!-- Delete Confirmation Modal -->
+                                <div class="modal fade" id="deleteModal{{ item.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ item.id }}" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header bg-danger text-white">
+                                                <h5 class="modal-title" id="deleteModalLabel{{ item.item_id }}">Confirm Delete</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                Are you sure you want to delete <strong>{{ item.item_name }}</strong>?
+                                            </div>
+                                            <div class="modal-footer">
+                                                <form method="post" action="{% url 'supply:supplyitem_delete' item.item_id %}">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="5" class="text-center">No supply items found.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card-footer text-end">
+                    <a href="{% url 'supply:supplyitem_add' %}" class="btn btn-success">Add New Item</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
