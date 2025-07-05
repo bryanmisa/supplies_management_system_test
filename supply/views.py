@@ -68,7 +68,7 @@ class CustomerAccessMixin(LoginRequiredMixin, UserPassesTestMixin):
         messages.error(self.request, "Access Denied: This page is for Customers only.")
         # Redirect managers trying to access customer pages back to the main dashboard
         if is_supplier_manager(self.request.user):
-            return redirect('dashboard') # The main dashboard view name
+            return redirect('supply/dashboard/dashboard.html') # The main dashboard view name
         # Redirect any other non-customer to the customer login
         return redirect('customer:login')
 
@@ -86,7 +86,7 @@ def login_page(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            return redirect('dashboard')  # Redirect to the dashboard after login
+            return redirect('supply:supply_dashboard')  # Redirect to the dashboard after login
     else:
         form = AuthenticationForm()
 
@@ -107,14 +107,12 @@ def index(request):
         return redirect('customer:available_supplies')
     elif is_supplier_manager(request.user): # This includes superusers now
         # Keep managers/admins on the main dashboard
-        return render(request, 'supply/dashboard/dashboard.html')
+        return render(request, 'supply:supply_dashboard')
     else:
         # Fallback for authenticated users with no assigned role.
-        # Log them out and redirect to a non-customer login page to break loops.
         logout(request)
         messages.warning(request, "Your account doesn't have a role assigned. You have been logged out. Please contact support or try logging in again if you have multiple roles.")
-        # Redirect to the manager login page (or a generic landing page)
-        return redirect('manager_login') # Assumes you have a URL named 'manager_login' pointing to login_page
+        return redirect('manager_login')
      # elif request.user.user_type == 'supply_manager' or request.user.is_superuser:
      #     # Keep managers/admins on the main dashboard or redirect to a specific manager dashboard
      #     return render(request, 'supply/dashboard/dashboard.html')

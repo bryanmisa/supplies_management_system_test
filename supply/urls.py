@@ -6,7 +6,7 @@ app_name = 'supply' # Namespace for supply app URLs
 
 urlpatterns = [
     # Dashboard URL
-    path('supply/dashboard', views.dashboard, name='dashboard'),
+    path('', views.dashboard, name='supply_dashboard'),
 
     # Supplier URLs
     path('suppliers/', views.SupplierListView.as_view(), name='suppliers_list'),
