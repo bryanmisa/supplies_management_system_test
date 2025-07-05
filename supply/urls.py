@@ -5,8 +5,8 @@ from supply import views # Use relative import
 app_name = 'supply' # Namespace for supply app URLs
 
 urlpatterns = [
-    # Keep dashboard/index if needed, or remove if dashboard is global
-    # path('', views.dashboard, name='index'), # Example if index was here
+    # Dashboard URL
+    path('supply/dashboard', views.dashboard, name='dashboard'),
 
     # Supplier URLs
     path('suppliers/', views.SupplierListView.as_view(), name='suppliers_list'),
@@ -44,5 +44,4 @@ urlpatterns = [
     path('requests/reject/<int:pk>/', views.reject_customer_request, name='reject_request'),
     path('requests/deliver/<int:pk>/', views.mark_as_delivered, name='deliver_request'),
     path('requests/cancel-delivery/<int:pk>/', views.cancel_delivery_action, name='cancel_delivery'), # Use the updated view name
-    path('notifications/mark_as_read/', views.mark_notifications_as_read, name='mark_notifications_as_read'),
 ]

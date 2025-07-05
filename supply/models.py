@@ -177,11 +177,3 @@ class SupplyTransaction(models.Model):
     def __str__(self):
         return f"{self.transaction_type} - {self.supply_item.item_name} ({self.quantity}) on {self.date.strftime('%Y-%m-%d')}"
     
-class NotificationFromCustomer(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='supply_notifications')
-    message = models.TextField()
-    is_read = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"Notification for {self.user.username}: {self.message}"  # Specify the table name explicitly

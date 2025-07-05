@@ -35,13 +35,3 @@ def rollback_stock_on_delete(sender, instance, **kwargs):
     item.save()
 
 
-@receiver(post_save, sender=CustomerRequest)
-def notify_supply_managers_on_new_request(sender, instance, created, **kwargs):
-    if created:
-        # Notify supply managers of a new request
-        supply_managers = User.objects.filter(groups__name='Supply Manager')
-        for manager in supply_managers:
-            NotificationFromCustomer.objects.create(
-                user=manager,
-                message=f"New request from {instance.customer.username} for {instance.supply_item.item_name}."
-            )

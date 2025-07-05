@@ -4,7 +4,7 @@ from django.db import transaction
 from django.contrib.auth import get_user_model  # Use get_user_model to reference the custom user model
 import logging
 
-from customer.models import CustomerRequest, Notification
+from customer.models import CustomerRequest
 from supply.models import SupplyTransaction
 
 logger = logging.getLogger(__name__)
@@ -40,31 +40,3 @@ def create_supply_out_transaction_on_delivery(sender, instance, created, **kwarg
             else:
                 logger.warning(f"Supply_out transaction for Request ID {instance.pk} already exists. Skipping creation.")
                 
-@receiver(post_save, sender=CustomerRequest)
-def create_notifications(sender, instance, created, **kwargs):
-    if created:
-        # Notify supply managers of a new request
-        supply_managers = User.objects.filter(groups__name='Supply Manager')  # Use the custom user model
-        for manager in supply_managers:
-            Notification.objects.create(
-                user=manager,
-                message=f"New request from {instance.customer.username} for {instance.supply_item.item_name}."
-            )   
-    else:
-        # Notify the customer of status changes
-        if instance.status == 'approved':
-            Notification.objects.create(
-                user=instance.customer,
-                message=f"Your request for {instance.supply_item.item_name} has been approved."
-            )
-        elif instance.status == 'delivered':
-            Notification.objects.create(
-                user=instance.customer,
-                message=f"Your request for {instance.supply_item.item_name} has been delivered."
-            )
-        elif instance.status == 'rejected':
-            Notification.objects.create(
-                user=instance.customer,
-                message=f"Your request for {instance.supply_item.item_name} has been rejected."
-            )
-            

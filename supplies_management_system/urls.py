@@ -20,7 +20,6 @@ urlpatterns = [
     path('', RedirectView.as_view(url=reverse_lazy('customer:login'), permanent=False), name='root_redirect'),
     path('manager/login/', login_page, name='manager_login'), # Explicit login path for managers/staff (was 'login')
     path('logout/', logout_page, name='logout'),
-    path('dashboard/', index , name='dashboard'), # General dashboard
 
     # Include supply app URLs (for manager actions, items, suppliers etc.)
     path('supply/', include('supply.urls', namespace='supply')),

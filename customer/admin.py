@@ -24,8 +24,3 @@ class CustomerRequestAdmin(admin.ModelAdmin):
     )
     # Make request_date read-only on the edit page
     readonly_fields = ('request_date',)
-
-@admin.register(Notification)
-class NotificationAdmin(admin.ModelAdmin):
-    list_display = ('user', 'message', 'is_read', 'created_at')
-    search_fields = ('user__username', 'message')   # Search by user username or message content

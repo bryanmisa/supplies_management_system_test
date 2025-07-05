@@ -6,12 +6,30 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import *
+from django.utils.decorators import method_decorator
 from supply.models import *
 from customer.models import *
 from supply.forms import *
 from customer.forms import *
 
 # Create your views here.
+
+@login_required
+def dashboard(request):
+    # Get counts for all statuses
+    status_list = ['pending', 'approved', 'rejected', 'delivered']
+    status_counts = {}
+    for status in status_list:
+        status_counts[status] = CustomerRequest.objects.filter(status=status).count()
+    supply_items = SupplyItem.objects.all().count()
+    context = {
+        'delivered_total': status_counts['delivered'],
+        'pending_total': status_counts['pending'],
+        'approved_total': status_counts['approved'],
+        'rejected_total': status_counts['rejected'],
+        'supply_items': supply_items,
+    }
+    return render(request, 'supply/dashboard/dashboard.html', context)
 
 #region #########   Authentication Views   ###################
 # --- Keep is_supplier_manager function ---
@@ -53,6 +71,7 @@ class CustomerAccessMixin(LoginRequiredMixin, UserPassesTestMixin):
             return redirect('dashboard') # The main dashboard view name
         # Redirect any other non-customer to the customer login
         return redirect('customer:login')
+
 
 
 #endregion ######### Authentication Views ###################
@@ -399,11 +418,6 @@ def cancel_delivery_action(request, pk):
      return redirect('supply:request_all_list') # Adjust redirect
  
  #endregion ######### Customer Request Views ###################
- 
 
-#region #########   Notification Views     ###################
-@login_required
-def mark_notifications_as_read(request):
-    request.user.supply_notifications.filter(is_read=False).update(is_read=True)
-    return redirect('supply:dashboard')  # Redirect to the supply manager's dashboard
-#endregion ######### Notification Views ###################
+
+

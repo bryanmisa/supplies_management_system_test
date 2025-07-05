@@ -11,4 +11,5 @@ urlpatterns = [
     path('supplies/', views.AvailableSupplyListView.as_view(), name='available_supplies'),
     path('request/new/', views.CustomerRequestCreateView.as_view(), name='request_create'),
     path('my_requests/', views.MyRequestsListView.as_view(), name='my_requests_list'),
+    path('profile/edit/', views.edit_profile, name='edit_profile'),
 ]

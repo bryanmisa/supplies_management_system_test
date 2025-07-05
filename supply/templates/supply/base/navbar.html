@@ -1,5 +1,5 @@
 {% load static %}
-{% load supply_notifications %}
+
 
 <!-- Navbar Start -->
 <nav class="navbar navbar-expand bg-light navbar-light sticky-top px-4 py-0">
@@ -13,28 +13,6 @@
         <input class="form-control border-0" type="search" placeholder="Search">
     </form>
     <div class="navbar-nav align-items-center ms-auto d-flex">
-        <!-- Notifications Dropdown -->
-        <div class="nav-item dropdown me-3">
-            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                <i class="fa fa-bell me-lg-2"></i>
-                <span class="d-none d-lg-inline-flex">Notification</span>
-            </a>
-            <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
-                {% get_unread_notifications user as unread_notifications %}
-                {% if unread_notifications %}
-                    {% for notification in unread_notifications %}
-                        <a href="#" class="dropdown-item">
-                            <h6 class="fw-normal mb-0">{{ notification.message }}</h6>
-                            <small>{{ notification.created_at|date:"M d, Y H:i" }}</small>
-                        </a>
-                        <hr class="dropdown-divider">
-                    {% endfor %}
-                    <a href="#" class="dropdown-item text-center">See all notifications</a>
-                {% else %}
-                    <span class="dropdown-item text-center">No notifications</span>
-                {% endif %}
-            </div>
-        </div>
 
         <!-- User Dropdown -->
         <div class="nav-item dropdown">

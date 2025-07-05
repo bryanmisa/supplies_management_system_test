@@ -1,4 +1,3 @@
-# customer/views.py
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView
@@ -7,10 +6,12 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from supply.models import SupplyItem # Import from supply
 from supply.views import CustomerAccessMixin # Import from supply.views if needed
-from customer.models import CustomerRequest, Notification
+from customer.models import CustomerRequest
 from customer.forms import CustomerRegistrationForm, CustomerRequestForm
-
-
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from customer.forms import UserProfileForm
 
 
 import logging
@@ -31,6 +32,20 @@ class CustomerRegistrationView(CreateView):
     def form_invalid(self, form):
         messages.error(self.request, "Registration failed. Please correct the errors below.")
         return super().form_invalid(form)
+
+
+@login_required
+def edit_profile(request):
+    if request.method == 'POST':
+        form = UserProfileForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Profile updated successfully!')
+            return redirect('customer:edit_profile')
+    else:
+        form = UserProfileForm(instance=request.user)
+    return render(request, 'customer/edit_profile.html', {'form': form, 'user': request.user})
+# customer/views.py
 
 # Customer Login View
 
@@ -94,8 +109,3 @@ class MyRequestsListView(CustomerAccessMixin, ListView):
         context = super().get_context_data(**kwargs)
         context['page_title'] = "My Supply Requests"
         return context
-
-@login_required
-def mark_notifications_as_read(request):
-    request.user.notifications.filter(is_read=False).update(is_read=True)
-    return redirect('customer:dashboard')  # Redirect to the dashboard or any other page

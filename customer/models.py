@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.conf import settings # Import settings
 from supply.models import SupplyItem # Import SupplyItem from supply app
 
+
 class CustomerRequest(models.Model):
     supply_item = models.ForeignKey(
         SupplyItem,
@@ -45,11 +46,3 @@ class CustomerRequest(models.Model):
         return f"Request for {item_name} by {customer_name}"
 
 
-class Notification(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='notifications')
-    message = models.TextField()
-    is_read = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"Notification for {self.user.username}: {self.message}"

@@ -5,6 +5,7 @@ from django.contrib.auth import get_user_model
 from .models import CustomerRequest
 from django.contrib.auth.models import Group # Import Group for user groups
 from supply.models import SupplyItem # Import from supply
+from django.contrib.auth import get_user_model
 
 User = get_user_model() # Get the custom User model
 
@@ -72,6 +73,10 @@ class CustomerRequestForm(forms.ModelForm):
 
         return quantity
 
+class UserProfileForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'email', 'address']
 
 class RejectionReasonForm(forms.ModelForm):
     class Meta:

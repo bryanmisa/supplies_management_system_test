@@ -1,5 +1,4 @@
 {% load static %}
-{% load notifications %}
 <!-- Navbar Start -->
 <nav class="navbar navbar-expand bg-light navbar-light sticky-top px-4 py-0">
     <a href="index.html" class="navbar-brand d-flex d-lg-none me-4">
@@ -12,28 +11,6 @@
         <input class="form-control border-0" type="search" placeholder="Search">
     </form>
     <div class="navbar-nav align-items-center ms-auto">
-        <!-- Notifications Dropdown -->
-        <div class="nav-item dropdown me-3">
-            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                <i class="fa fa-bell me-lg-2"></i>
-                <span class="d-none d-lg-inline-flex">Notification</span>
-            </a>
-            <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
-                {% get_unread_notifications user as notifications %}
-                {% if notifications.count > 0 %}
-                    {% for notification in notifications %}
-                        <a href="#" class="dropdown-item">
-                            <h6 class="fw-normal mb-0">{{ notification.message }}</h6>
-                            <small>{{ notification.created_at|date:"M d, Y H:i" }}</small>
-                        </a>
-                        <hr class="dropdown-divider">
-                    {% endfor %}
-                    <a href="#" class="dropdown-item text-center">See all notifications</a>
-                {% else %}
-                    <span class="dropdown-item text-center">No notifications</span>
-                {% endif %}
-            </div>
-        </div>
 
         <!-- User Dropdown -->
         <div class="nav-item dropdown">
@@ -43,7 +20,7 @@
                 <span class="d-none d-lg-inline-flex">{{ user.username }}</span>
             </a>
             <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
-                <a href="#" class="dropdown-item">My Profile</a>
+                <a href="{% url 'customer:edit_profile' %}" class="dropdown-item">My Profile</a>
                 <a href="#" class="dropdown-item">Settings</a>
                 <a href="{% url 'logout' %}" class="dropdown-item">Logout</a>
             </div>
