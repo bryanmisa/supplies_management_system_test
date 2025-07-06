@@ -79,7 +79,7 @@ class CustomerAccessMixin(LoginRequiredMixin, UserPassesTestMixin):
 #region #########   Login/Logout Views   ###################
 def login_page(request):
     if request.user.is_authenticated:
-        return redirect('dashboard')  # Redirect to the dashboard if already logged in
+        return redirect('supply:supply_dashboard')  # Redirect to the dashboard if already logged in
 
     if request.method == 'POST':
         form = AuthenticationForm(data=request.POST)
