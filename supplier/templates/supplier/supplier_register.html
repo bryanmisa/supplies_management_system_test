@@ -1,0 +1,9 @@
+{% extends "supplier/base/base.html" %}
+
+<h2>Supplier Registration</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Register</button>
+</form>
+<a href="{% url 'supplier:supplier_login' %}">Already have an account? Login</a>

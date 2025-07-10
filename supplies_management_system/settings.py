@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     # apps
     'supply',
     'customer',
+    'supplier',
     # 3rd party apps
     'django_select2', # for select2 integration
     'django_redis', # for Redis caching

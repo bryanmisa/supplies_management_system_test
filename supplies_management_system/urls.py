@@ -11,7 +11,7 @@ from django.shortcuts import redirect # Import redirect
 from supply.views import login_page, logout_page, index
 
 urlpatterns = [
-     path('', lambda request: redirect('manager_login'), name='root_redirect'),  # Redirect root to manager login
+    path('', lambda request: redirect('manager_login'), name='root_redirect'),  # Redirect root to manager login
     path('admin/', admin.site.urls),
     # Include django-select2 URLs
     path('select2/', include('django_select2.urls')),
@@ -22,7 +22,12 @@ urlpatterns = [
     path('supply/', include('supply.urls', namespace='supply')),
     
     # Include customer app URLs
+    # This will handle customer registration, login, dashboard etc.
     path('customer/', include('customer.urls', namespace='customer')),
+    
+    # Include supplier app URLs
+    # This will handle supplier registration, login, dashboard etc.
+    path('supplier/', include('supplier.urls', namespace='supplier')),
     
 ]
 
